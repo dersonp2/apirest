@@ -2,29 +2,50 @@ package com.produtos.apirest.resources;
 
 import com.produtos.apirest.models.Produto;
 import com.produtos.apirest.repository.ProdutoRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api")
+@Api(value = "API REST Produtos")
+@CrossOrigin(origins = "*")
 public class ProdutoResource {
 
     @Autowired
     ProdutoRepository produtoRepository;
 
-    @GetMapping(value = "/produtos")
-    public List<Produto> listaProdutos(){
-    return produtoRepository.findAll();
+    @GetMapping("/produtos")
+    @ApiOperation(value = "Retorna a lista de produtos")
+    public List<Produto> listaProdutos() {
+        return produtoRepository.findAll();
     }
 
-    @GetMapping(value = "/produto/{id}")
-    public Produto listaProdutoUnico(@PathVariable(value = "id") long id){
+    @GetMapping("/produto/{id}")
+    @ApiOperation(value = "Retorna um produto unico")
+    public Produto listaProdutoUnico(@PathVariable(value = "id") long id) {
         return produtoRepository.findById(id);
+    }
+
+    @PostMapping("/produto")
+    @ApiOperation(value = "Cadastra um produto")
+    public Produto salvaProduto(@RequestBody Produto produto) {
+        return produtoRepository.save(produto);
+    }
+
+    @DeleteMapping("/produto")
+    @ApiOperation(value = "Deleta um produto")
+    public void deletaProduto(@RequestBody Produto produto){
+        produtoRepository.delete(produto);
+    }
+
+    @PutMapping("/produto")
+    @ApiOperation(value = "Atualiza um produto")
+    public Produto atualizaProduto (@RequestBody Produto produto){
+        return produtoRepository.save(produto);
     }
 }
